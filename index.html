@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asteroid Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="landing-only">
+  <section class="landing-screen" id="landingScreen">
+    <video class="landing-video" autoplay muted loop playsinline>
+      <source src="assets/earth.mp4" type="video/mp4" />
+    </video>
+
+    <div class="landing-overlay"></div>
+
+    <div class="landing-content glass">
+      <p class="landing-tag">NASA + AI + Analytics</p>
+      <h1>Asteroid Tracker</h1>
+      <p>
+        Explore asteroid activity with real-time NASA data, intelligent insights,
+        voice assistant, analytics, and interactive visualizations.
+      </p>
+
+      <div class="landing-actions">
+        <button id="enterDashboardBtn" class="primary-btn">Explore Dashboard</button>
+      </div>
+    </div>
+
+    <div class="floating-cards">
+  <div class="float-card card-1 glass">
+    <p>Total Asteroids</p>
+    <h3 id="floatTotal">--</h3>
+  </div>
+
+  <div class="float-card card-2 glass">
+    <p>Hazardous</p>
+    <h3 id="floatHazard">--</h3>
+  </div>
+
+  <div class="float-card card-3 glass">
+    <p>Closest</p>
+    <h3 id="floatClosest">--</h3>
+  </div>
+</div>
+
+    <div class="transition-loader" id="transitionLoader">
+      <div class="loader-ring"></div>
+      <p>Initializing dashboard...</p>
+    </div>
+  </section>
+
+  <div class="page-shell hidden-dashboard" id="dashboardSection">
+    <header class="hero glass">
+      <div class="hero-left">
+        <p class="eyebrow">AI Powered NASA Dashboard</p>
+        <h1>Asteroid Tracker</h1>
+        <p class="subtitle">
+          Explore real-time and date-based asteroid activity with NASA data,
+          AI insights, voice assistant, analytics, and interactive visualizations.
+        </p>
+
+        <div class="hero-actions">
+  <button id="heroExploreBtn" class="primary-btn">Explore Now</button>
+  <button id="themeToggleBtn" class="secondary-btn">Dark Mode</button>
+  <button id="backToLandingBtn" class="secondary-btn">Back to Landing</button>
+</div>
+      </div>
+
+      <div class="hero-right">
+        <div id="orbitScene" class="orbit-scene"></div>
+      </div>
+    </header>
+
+    <section class="glass filter-bar">
+      <div class="filter-group">
+        <label for="startDate">Start Date</label>
+        <input type="date" id="startDate" />
+      </div>
+
+      <div class="filter-group">
+        <label for="endDate">End Date</label>
+        <input type="date" id="endDate" />
+      </div>
+
+      <div class="filter-group grow">
+        <label for="searchInput">Search Asteroid</label>
+        <input type="text" id="searchInput" placeholder="Search by asteroid name..." />
+      </div>
+
+      <div class="filter-group checkbox-group">
+        <label>Filter</label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="hazardousOnly" />
+          Hazardous only
+        </label>
+      </div>
+
+      <div class="filter-actions">
+        <button id="loadRangeBtn" class="primary-btn">Load Range</button>
+        <button id="refreshBtn" class="secondary-btn">Today</button>
+        <button id="downloadPdfBtn" class="secondary-btn">Download PDF</button>
+      </div>
+    </section>
+
+    <section id="alertBanner" class="alert-banner hidden"></section>
+
+    <section class="stats-grid">
+      <div class="glass stat-card">
+        <p class="stat-label">Total Asteroids</p>
+        <h2 id="totalCount">--</h2>
+      </div>
+
+      <div class="glass stat-card">
+        <p class="stat-label">Hazardous</p>
+        <h2 id="hazardCount">--</h2>
+      </div>
+
+      <div class="glass stat-card">
+        <p class="stat-label">Closest</p>
+        <h2 id="closestAsteroid">--</h2>
+      </div>
+
+      <div class="glass stat-card">
+        <p class="stat-label">Fastest</p>
+        <h2 id="fastestSpeed">--</h2>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <div class="glass panel">
+        <div class="panel-head">
+          <h3>Asteroid List</h3>
+          <span id="dateLabel" class="chip">--</span>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Distance (km)</th>
+                <th>Speed (kph)</th>
+                <th>Size (m)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="asteroidTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="glass panel side-panel">
+        <div class="panel-head">
+          <h3>Quick Insights</h3>
+        </div>
+
+        <div class="insight-box">
+          <p><strong>Closest:</strong> <span id="insightClosest">--</span></p>
+          <p><strong>Fastest:</strong> <span id="insightFastest">--</span></p>
+          <p><strong>Largest:</strong> <span id="insightLargest">--</span></p>
+          <p><strong>Hazard Risk:</strong> <span id="insightHazard">--</span></p>
+        </div>
+
+        <div class="ai-explain-box">
+          <div class="panel-head mini-head">
+            <h4>AI Insights</h4>
+            <button id="explainAiBtn" class="secondary-btn small-btn">Explain with AI</button>
+          </div>
+          <div id="aiInsightText" class="ai-insight-text">
+            Click “Explain with AI” to generate a smart summary of the selected range.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="charts-grid">
+      <div class="glass panel">
+        <div class="panel-head">
+          <h3>Hazard Distribution</h3>
+        </div>
+        <canvas id="hazardChart"></canvas>
+      </div>
+
+      <div class="glass panel">
+        <div class="panel-head">
+          <h3>Top 5 Fastest</h3>
+        </div>
+        <canvas id="speedChart"></canvas>
+      </div>
+
+      <div class="glass panel">
+        <div class="panel-head">
+          <h3>Top 5 Closest</h3>
+        </div>
+        <canvas id="distanceChart"></canvas>
+      </div>
+    </section>
+
+    <section class="charts-grid single-line-chart">
+      <div class="glass panel">
+        <div class="panel-head">
+          <h3>Daily Asteroid Count</h3>
+        </div>
+        <canvas id="dailyTrendChart"></canvas>
+      </div>
+    </section>
+  </div>
+
+  <button id="chatbot-btn">💬</button>
+
+  <div id="chat-window" class="chat-window hidden">
+    <div class="chat-header">AI Asteroid Assistant</div>
+
+    <div class="chat-suggestions">
+  <button class="suggestion-btn">How many hazardous asteroids are there?</button>
+  <button class="suggestion-btn">Which asteroid is the closest?</button>
+  <button class="suggestion-btn">Which asteroid is the fastest?</button>
+</div>
+
+    <div id="chat-body" class="chat-body"></div>
+
+    <div class="chat-input-box">
+      <input id="chat-input" type="text" placeholder="Ask in English..." />
+      <button id="voiceBtn" class="voice-btn" title="Voice input">🎤</button>
+      <button id="chat-send">Send</button>
+    </div>
+  </div>
+
+  <div id="asteroidModal" class="modal hidden">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal-content">
+      <div class="modal-head">
+        <h3 id="modalTitle">Asteroid Details</h3>
+        <button id="closeModalBtn" class="close-btn">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p><strong>Approach Date:</strong> <span id="modalDate">--</span></p>
+        <p><strong>Distance:</strong> <span id="modalDistance">--</span></p>
+        <p><strong>Speed:</strong> <span id="modalSpeed">--</span></p>
+        <p><strong>Size:</strong> <span id="modalSize">--</span></p>
+        <p><strong>Status:</strong> <span id="modalStatus">--</span></p>
+        <p><strong>NASA Link:</strong> <a id="modalNasaLink" href="#" target="_blank">Open NASA JPL Page</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
